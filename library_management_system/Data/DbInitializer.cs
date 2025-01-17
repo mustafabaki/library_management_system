@@ -1,4 +1,5 @@
 ﻿using library_management_system.Models;
+using library_management_system.Utils;
 
 namespace library_management_system.Data
 {
@@ -27,10 +28,10 @@ namespace library_management_system.Data
             if (!context.Members.Any())
             {
                 context.Members.AddRange(
-                    new Member { Name = "Admin User", Email = "admin@library.com", Role = "Admin" },
-                    new Member { Name = "John Doe", Email = "john.doe@example.com", Role = "User" },
-                    new Member { Name = "Jane Smith", Email = "jane.smith@example.com", Role = "User" },
-                    new Member { Name = "Alice Johnson", Email = "alice.johnson@example.com", Role = "User" }
+                    new Member { Name = "Admin User", Email = "admin@library.com", Role = "admin", Password = Utilities.HashPassword("verysecretpassword") },
+                    new Member { Name = "John Doe", Email = "john.doe@example.com", Role = "user", Password = Utilities.HashPassword("verysecretpassword") },
+                    new Member { Name = "Jane Smith", Email = "jane.smith@example.com", Role = "user", Password = Utilities.HashPassword("verysecretpassword") },
+                    new Member { Name = "Alice Johnson", Email = "alice.johnson@example.com", Role = "user", Password = Utilities.HashPassword("verysecretpassword") }
                 );
 
                 context.SaveChanges(); // Save to generate IDs for Members

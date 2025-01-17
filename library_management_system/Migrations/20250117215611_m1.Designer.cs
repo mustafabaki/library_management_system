@@ -12,8 +12,8 @@ using library_management_system.Data;
 namespace library_management_system.Migrations
 {
     [DbContext(typeof(LibraryDB))]
-    [Migration("20250116164718_m3")]
-    partial class m3
+    [Migration("20250117215611_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,6 @@ namespace library_management_system.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")

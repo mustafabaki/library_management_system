@@ -14,6 +14,12 @@ namespace library_management_system.Utils
             return member;
         }
 
+        public static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+            
+        }
+
         public static bool VerifyPassword(string password, Member member)
         {
             return BCrypt.Net.BCrypt.Verify(password, member.Password);
