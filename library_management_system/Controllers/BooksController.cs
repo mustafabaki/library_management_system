@@ -60,11 +60,5 @@ namespace library_management_system.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult DeleteBook(Guid id)
-        {
-            _bookService.DeleteBook(id);
-            return NoContent();
-        }
     }
 }
