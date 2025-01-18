@@ -53,10 +53,10 @@ namespace library_management_system.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateBook(Guid id, [FromBody] Book book)
+        public async Task<IActionResult> UpdateBook(Guid id, [FromBody] Book book)
         {
-            if (id != book.Id) return BadRequest();
-            _bookService.UpdateBook(book);
+            var existingRecord = await _bookService.GetBookByIdAsync(id);
+            _bookService.UpdateBook(book, existingRecord);
             return NoContent();
         }
 

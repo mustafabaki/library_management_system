@@ -27,9 +27,23 @@ namespace library_management_system.Services.Books
             await _bookRepository.AddAsync(book);
         }
 
-        public void UpdateBook(Book book)
+        public void UpdateBook(Book book, Book existingRecord)
         {
-            _bookRepository.Update(book);
+            if (book.Title != null)
+            {
+                existingRecord.Title = book.Title;
+            }
+
+            if (book.Author != null)
+            {
+                existingRecord.Author = book.Author;
+            }
+
+            if (book.IsAvailable != null)
+            {
+                existingRecord.IsAvailable = book.IsAvailable;
+            }
+            _bookRepository.Update(existingRecord);
         }
 
         public void DeleteBook(Guid id)
