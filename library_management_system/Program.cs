@@ -3,6 +3,7 @@ using library_management_system.Models;
 using library_management_system.Repositories;
 using library_management_system.Repository;
 using library_management_system.Services.Books;
+using library_management_system.Services.Loans;
 using library_management_system.Services.Members;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,9 @@ builder.Services.AddDbContext<LibraryDB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryDbConnection")));
 
 // Register custom services ... 
+builder.Services.AddScoped<IRepository<Loan>, Repository<Loan>>();
+builder.Services.AddScoped<ILoansService, LoansService>();
+
 builder.Services.AddScoped<IRepository<Book>, Repository<Book>>();
 builder.Services.AddScoped<IBookService, BookService>();
 
