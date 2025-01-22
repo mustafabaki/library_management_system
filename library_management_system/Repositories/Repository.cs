@@ -29,10 +29,10 @@ namespace library_management_system.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public void Update(T entity)
+        public async Task<(bool, T record)> Update(T entity)
         {
             _context.Set<T>().Update(entity);
-            _context.SaveChanges();
+            return (await _context.SaveChangesAsync() > 0, entity);
         }
 
         public void Delete(T entity)

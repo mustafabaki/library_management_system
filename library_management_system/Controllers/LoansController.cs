@@ -25,23 +25,34 @@ namespace library_management_system.Controllers
         [HttpPut]
         public async Task<IActionResult> ExtendLoan(Guid loanId, int numberOfDays)
         {
-           await _loansService.ExtendLoan(loanId, numberOfDays);
-            return Ok();
+            var (result, data) = await _loansService.ExtendLoan(loanId, numberOfDays);
+
+            if (result)
+            {
+                return Ok(data);
+            }
+
+            return BadRequest(new { message = "Your loan could not be extended." });
         }
 
 
         [HttpPut]
         public async Task<IActionResult> ReturnLoan(Guid loanId)
         {
-            _loansService.ReturnLoan(loanId);
+            var result = _loansService.ReturnLoan(loanId);
 
-            return Ok();
+            if (result)
+            {
+                return Ok(new { message = "The book has been returned successfully."});
+            }
+
+            return BadRequest(new { message = "Oops! Something went wrong!" });
         }
 
         [HttpPost]
         public async Task<IActionResult> LoanBook(Guid bookId, Guid memberId)
         {
-            _loansService.LoanBook(bookId, memberId);
+            await _loansService.LoanBook(bookId, memberId);
 
             return Ok();
         }

@@ -20,17 +20,17 @@ namespace library_management_system.Services.Loans
             _libraryDB = libraryDB;
         }
 
-        public async Task ExtendLoan(Guid loanId, int numberOfDays)
+        public async Task<(bool, Loan)> ExtendLoan(Guid loanId, int numberOfDays)
         {
             var existingRecord = await _loanRepository.GetByIdAsync(loanId);
             if (existingRecord == null || existingRecord.IsExtended == true)
             {
-                return;
+                return (false, new Loan());
             }
 
             existingRecord.ReturnDate = existingRecord.ReturnDate?.AddDays(numberOfDays);
             existingRecord.IsExtended = true;
-            _loanRepository.Update(existingRecord);
+            return await _loanRepository.Update(existingRecord);
         }
 
         public async Task<IEnumerable<Loan>> GetUserLoans(Guid userId)
@@ -40,37 +40,35 @@ namespace library_management_system.Services.Loans
          .ToListAsync();
         }
 
-        public async void LoanBook(Guid bookId, Guid memberId)
+        public async Task LoanBook(Guid bookId, Guid memberId)
         {
-            Member member = await _memberRepository.GetByIdAsync(memberId);
-            Book book = await _bookRepository.GetByIdAsync(bookId);
+            var book = await _libraryDB.Books.FindAsync(bookId);
+            var member = await _libraryDB.Members.FindAsync(memberId);
+
             book.IsAvailable = false;
-            
-            Loan loan = new Loan();
-            loan.Member = member;
-            loan.Book = book;
-            loan.Member = member;
-            loan.LoanDate = DateTime.UtcNow;
-            loan.ReturnDate = DateTime.UtcNow.AddDays(20);
-            loan.IsExtended = false;
-            
-            await _loanRepository.AddAsync(loan);
-            
+
+            await _libraryDB.Loans.AddAsync(new Loan
+            {
+                Book = book,
+                Member = member,
+                IsExtended = false,
+                LoanDate = DateTime.UtcNow,
+                ReturnDate = DateTime.UtcNow.AddDays(15)
+            });
+
+            await _libraryDB.SaveChangesAsync();
         }
 
-        public async void ReturnLoan(Guid loanId)
+        public bool ReturnLoan(Guid loanId)
         {
-            var loan = await _loanRepository.GetByIdAsync(loanId);
-            if (loan == null)
-            {
-                return;
-            }
+            var loan = _libraryDB.Loans.Include(x => x.Book).First();
+            Book book = loan.Book;
 
-            Book bookToReturn = loan.Book;
-            
-            bookToReturn.IsAvailable = true;
+            book.IsAvailable = true;
 
-            _bookRepository.Update(bookToReturn);
+            _libraryDB.Books.Update(book);
+
+            return _libraryDB.SaveChanges() > 0;
 
         }
     }
